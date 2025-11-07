@@ -14,12 +14,22 @@ module.exports = async function (context, req) {
       }
     });
 
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Supabase responded with ${res.status}: ${text}`);
+    }
+
     const data = await res.json();
     context.res = {
       status: 200,
+      headers: { "Content-Type": "application/json" },
       body: data
     };
   } catch (err) {
-    context.res = { status: 500, body: { error: err.message } };
+    context.log("Error fetching Supabase data:", err);
+    context.res = {
+      status: 500,
+      body: { error: err.message }
+    };
   }
 };
