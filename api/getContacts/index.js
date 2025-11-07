@@ -1,17 +1,16 @@
 const fetch = require("node-fetch");
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
-
 module.exports = async function (context, req) {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_KEY = process.env.SUPABASE_KEY;
   const url = `${SUPABASE_URL}/rest/v1/contact?select=*`;
 
   try {
     const res = await fetch(url, {
       headers: {
         apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
-      }
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+      },
     });
 
     if (!res.ok) {
@@ -23,14 +22,19 @@ module.exports = async function (context, req) {
     context.res = {
       status: 200,
       headers: { "Content-Type": "application/json" },
-      body: data
+      body: data,
     };
   } catch (err) {
-    context.log("Error fetching Supabase data:", err);
+    // 👇 return full debug info directly
     context.res = {
       status: 500,
-      body: { error: err.message }
+      headers: { "Content-Type": "application/json" },
+      body: {
+        error: err.message,
+        hasKey: !!SUPABASE_KEY,
+        hasUrl: !!SUPABASE_URL,
+        endpoint: url,
+      },
     };
   }
-  
 };
