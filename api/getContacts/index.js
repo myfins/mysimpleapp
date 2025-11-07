@@ -1,10 +1,11 @@
 const fetch = require("node-fetch");
 
+// 🔹 Temporarily hardcode Supabase credentials for testing
+const SUPABASE_URL = "https://ckuxsbbqlzqrzkxniajr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdXhzYmJxbHpxcnpreG5pYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MjI1NzYsImV4cCI6MjA3Nzk5ODU3Nn0.Caq7LLpBNX8KXiVmEJZwlrel8os9DjRS_96msLevlho";
+
 module.exports = async function (context, req) {
-  //const SUPABASE_URL = process.env.SUPABASE_URL;
-  //const SUPABASE_KEY = process.env.SUPABASE_KEY;
-  const SUPABASE_URL = "https://ckuxsbbqlzqrzkxniajr.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrdXhzYmJxbHpxcnpreG5pYWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MjI1NzYsImV4cCI6MjA3Nzk5ODU3Nn0.Caq7LLpBNX8KXiVmEJZwlrel8os9DjRS_96msLevlho";
+  // 👇 Note: your table is "contact", not "contacts"
   const url = `${SUPABASE_URL}/rest/v1/contact?select=*`;
 
   try {
@@ -21,21 +22,19 @@ module.exports = async function (context, req) {
     }
 
     const data = await res.json();
+
     context.res = {
       status: 200,
       headers: { "Content-Type": "application/json" },
       body: data,
     };
   } catch (err) {
-    // 👇 return full debug info directly
     context.res = {
       status: 500,
       headers: { "Content-Type": "application/json" },
       body: {
         error: err.message,
-        hasKey: !!SUPABASE_KEY,
-        hasUrl: !!SUPABASE_URL,
-        endpoint: url,
+        urlUsed: url,
       },
     };
   }
