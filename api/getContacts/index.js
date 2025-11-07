@@ -4,7 +4,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 module.exports = async function (context, req) {
-  const url = `${SUPABASE_URL}/rest/v1/contacts?select=*`;
+  const url = `${SUPABASE_URL}/rest/v1/contact?select=*`;
 
   try {
     const res = await fetch(url, {
